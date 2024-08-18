@@ -1,0 +1,152 @@
+CREATE DATABASE PRUEBA11
+
+
+-- Eliminación de tablas existentes si existen
+IF OBJECT_ID('dbo.fabricante', 'U') IS NOT NULL 
+DROP TABLE dbo.fabricante;
+
+IF OBJECT_ID('dbo.producto', 'U') IS NOT NULL 
+DROP TABLE dbo.producto;
+
+-- Creación de la tabla fabricante
+CREATE TABLE fabricante (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+-- Creación de la tabla producto con la columna moneda
+CREATE TABLE producto (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  precio DECIMAL(10, 2) NOT NULL,
+  id_fabricante INT NOT NULL,
+  moneda VARCHAR(10) NOT NULL DEFAULT 'dólar',
+  FOREIGN KEY (id_fabricante) REFERENCES fabricante(id)
+);
+
+-- Inserción de datos en la tabla fabricante
+INSERT INTO fabricante (nombre) VALUES
+('Asus'),
+('Lenovo'),
+('Hewlett-Packard'),
+('Samsung'),
+('Seagate'),
+('Crucial'),
+('Gigabyte'),
+('Huawei'),
+('Xiaomi');
+
+-- Inserción de datos en la tabla producto con el campo moneda
+INSERT INTO producto (nombre, precio, id_fabricante, moneda) VALUES
+('Disco duro SATA3 1TB', 86.99, 5, 'dólar'),
+('Memoria RAM DDR4 8GB', 120.00, 6, 'dólar'),
+('Disco SSD 1 TB', 150.99, 4, 'dólar'),
+('GeForce GTX 1050Ti', 185.00, 7, 'dólar'),
+('GeForce GTX 1080 Xtreme', 755.00, 6, 'dólar'),
+('Monitor 24 LED Full HD', 202.00, 1, 'dólar'),
+('Monitor 27 LED Full HD', 245.99, 1, 'dólar'),
+('Portátil Yoga 520', 559.00, 2, 'soles'),
+('Portátil Ideapd 320', 444.00, 2, 'soles'),
+('Impresora HP Deskjet 3720', 59.99, 3, 'soles'),
+('Impresora HP Laserjet Pro M26nw', 180.00, 3, 'soles'),
+('Impresora HP Laserjet Pro M26nw', 180.55, 3, 'Euro');
+
+SELECT * FROM PRODUCTO WHERE NOMBRE='Disco duro SATA3 1TB'
+SELECT * FROM PRODUCTO WHERE NOMBRE<>'Disco duro SATA3 1TB'
+
+
+SELECT * FROM PRODUCTO WHERE ID BETWEEN 1 AND 3
+
+SELECT * FROM PRODUCTO WHERE ID_FABRICANTE BETWEEN 1 AND 3
+SELECT * FROM PRODUCTO WHERE ID_FABRICANTE NOT BETWEEN 1 AND 3
+
+SELECT * FROM PRODUCTO WHERE ID IN (3,7)
+SELECT * FROM PRODUCTO WHERE ID NOT IN (3,7)
+
+SELECT * FROM PRODUCTO WHERE ID <=1
+SELECT * FROM PRODUCTO WHERE ID <>1
+
+
+
+
+UPDATE PRODUCTO SET moneda = 'DOLARES', PRECIO=60.00 WHERE ID = 1
+UPDATE PRODUCTO SET moneda = 'SOLES' WHERE ID IN (4,5,9)
+UPDATE PRODUCTO SET moneda = 'SOLES' WHERE ID = 1
+
+
+-- SEGUN EL NUMERO TRAE LOS PRIMEROS REGISTROS
+SELECT TOP 1 * FROM PRODUCTO
+
+-- CUENTA LOS REGISTROS, POR PERFORMANCE CONVIENE COLOCAR EL 1 PARA QUE SOLO CUENTE DE LA PRI,MERA COLUMNA
+SELECT COUNT (*) FROM producto
+SELECT COUNT (1) FROM producto
+
+-- CREA UNA COPIA COMPLETA
+SELECT * INTO PRODUCTO2 FROM PRODUCTO
+SELECT * FROM PRODUCTO2
+
+--CREA UNA COPIA DE LA ESTRUCTURA DE LA TABLA
+SELECT TOP 0 * INTO PRODUCTO3 FROM PRODUCTO
+SELECT * FROM PRODUCTO3
+
+INSERT INTO Producto3
+SELECT TOP 10 NOMBRE, precio, id_fabricante, moneda  FROM PRODUCTO
+
+INSERT INTO Producto3
+SELECT NOMBRE, precio, id_fabricante, moneda  FROM PRODUCTO WHERE ID IN (6,9,10)
+
+
+-- ELIMINA DATOS DUPLICADOS
+SELECT DISTINCT * FROM fabricante
+
+
+SELECT COUNT (*) FROM (
+SELECT DISTINCT ID_FABRICANTE FROM Producto3
+)
+
+SELECT DISTINCT * FROM(
+ COUNT (*)  FROM fabricante
+ )
+
+
+-- CONTEO DE CAMPOS NO REPETIDOS
+ SELECT COUNT (*) FROM PRODUCTO WHERE ID IN (
+SELECT DISTINCT ID_FABRICANTE FROM PRODUCTO
+)
+
+
+-- MISMA CONSULTA ANTERIOR 
+ SELECT COUNT (DISTINCT ID_FABRICANTE ) FROM producto
+
+
+
+SELECT * FROM producto WHERE ID = 1 AND PRECIO <=86.99
+
+SELECT * FROM producto WHERE ID = 1 OR ID = 2
+
+SELECT * FROM producto ORDER BY ID DESC 
+
+SELECT TOP(1) * FROM producto ORDER BY ID DESC 
+
+SELECT TOP(2) * FROM producto WHERE ID > 7  ORDER BY ID DESC 
+
+SELECT * FROM producto ORDER BY MONEDA DESC, PRECIO ASC
+
+
+SELECT LEN (NOMBRE) AS LOMGITUD, NOMBRE FROM PRODUCTO
+
+SELECT * , ISNUMERIC(ID_FABRICANTE) AS 'SI ES NUMERICO',ISNUMERIC(NOMBRE) AS 'NO ES NUMERICO' FROM PRODUCTO
+WHERE ISNUMERIC(NOMBRE)=0
+
+SELECT UPPER('gdfgfdg')
+
+SELECT LOWER('FDDRBFDV')
+
+SELECT UPPER(LEFT('nggfngfngf', 1))
+
+SELECT UPPER(right('nggfngfngf', 1))
+
+select substring('isaac', 2 , 3)
+
+
+
